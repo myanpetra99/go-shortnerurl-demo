@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+
 	_ "github.com/lib/pq"
 )
 
@@ -14,7 +15,6 @@ type DBConfig struct {
 	Password string
 	DBName   string
 }
-
 
 func ConnectToDB() (*sql.DB, error) {
 	var cfg DBConfig
