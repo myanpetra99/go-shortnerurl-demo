@@ -1,8 +1,6 @@
 package api
 
 import (
-	"api/config"
-	"api/controller"
 	"log"
 	"net/http"
 
@@ -16,18 +14,18 @@ func Routes(r *gin.RouterGroup) {
 		c.String(http.StatusOK, "This is home page")
 	})
 	r.GET("/:short", func(c *gin.Context) {
-		db, err := config.ConnectToDB()
+		db, err := ConnectToDB()
 		if err != nil {
 			log.Fatalf("Unable to connect to database: %v", err)
 		}
-		controller.GetOriginalURL(c, db)
+		GetOriginalURL(c, db)
 	})
 	r.POST("/api/shorten", func(c *gin.Context) {
-		db, err := config.ConnectToDB()
+		db, err := ConnectToDB()
 		if err != nil {
 			log.Fatalf("Unable to connect to database: %v", err)
 		}
-		controller.CreateNewShortURL(c, db)
+		CreateNewShortURL(c, db)
 	})
 }
 
