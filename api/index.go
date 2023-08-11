@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"api/config"
-	"api/controller"
+	"kecilin/config"
+	"kecilin/controller"
 	"log"
 	"net/http"
 

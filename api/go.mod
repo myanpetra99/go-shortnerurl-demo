@@ -1,4 +1,4 @@
-module api
+module kecilin
 
 go 1.20
 
