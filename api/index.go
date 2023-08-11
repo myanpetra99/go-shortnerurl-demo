@@ -1,12 +1,15 @@
 package api
 
 import (
+	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
-	"database/sql"
-	"github.com/gin-gonic/gin"
+	"os"
 	"time"
-	"fmt"
+
+	"github.com/gin-gonic/gin"
+	_ "github.com/lib/pq"
 )
 
 var app *gin.Engine
@@ -41,25 +44,23 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	app.ServeHTTP(w, r)
 }
 
-
 type DBConfig struct {
 	Host     string
-	Port     int
+	Port     string
 	User     string
 	Password string
 	DBName   string
 }
 
-
 func ConnectToDB() (*sql.DB, error) {
 	var cfg DBConfig
-	cfg.Host = "db.vgaaiqzgivncbpxmsipt.supabase.co"
-	cfg.Port = 5432
-	cfg.User = "postgres"
-	cfg.Password = "Vinno260510!"
-	cfg.DBName = "postgres"
+	cfg.Host = os.Getenv("DB_HOST")
+	cfg.Port = os.Getenv("DB_PORT")
+	cfg.User = os.Getenv("DB_USER")
+	cfg.Password = os.Getenv("DB_PASSWORD")
+	cfg.DBName = os.Getenv("DB_NAME")
 
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		cfg.Host, cfg.Port, cfg.User, cfg.Password, cfg.DBName)
 
 	db, err := sql.Open("postgres", psqlInfo)
@@ -77,8 +78,6 @@ func ConnectToDB() (*sql.DB, error) {
 	return db, nil
 }
 
-
-
 func GetOriginalURL(c *gin.Context, db *sql.DB) {
 	shortcode := c.Param("short")
 	var url string
@@ -87,7 +86,7 @@ func GetOriginalURL(c *gin.Context, db *sql.DB) {
 	if err != nil {
 		if err == sql.ErrNoRows {
 			c.String(404, "No links found with that short or maybe the link has expired")
-			return 
+			return
 		}
 		log.Fatal(err)
 		c.String(500, "Internal server error")
@@ -121,7 +120,7 @@ func CreateNewShortURL(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	shortCode = "http://localhost:8080/" + short
+	shortCode = "https://kecilin.vercel.app/api/" + short
 	c.String(201, shortCode)
 	return
 }
