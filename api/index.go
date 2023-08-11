@@ -53,11 +53,11 @@ type DBConfig struct {
 
 func ConnectToDB() (*sql.DB, error) {
 	var cfg DBConfig
-	cfg.Host = "localhost"
+	cfg.Host = "db.vgaaiqzgivncbpxmsipt.supabase.co"
 	cfg.Port = 5432
 	cfg.User = "postgres"
-	cfg.Password = "1234"
-	cfg.DBName = "pendek.in"
+	cfg.Password = "Vinno260510!"
+	cfg.DBName = "postgres"
 
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		cfg.Host, cfg.Port, cfg.User, cfg.Password, cfg.DBName)
