@@ -119,7 +119,7 @@ func CreateNewShortURL(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	shortCode = "https://kecilin.vercel.app/api/" + short
+	shortCode = "https://kecilin.vercel.app/" + short
 	c.String(201, shortCode)
 	return
 }
