@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"os"
 	"time"
-
+	"math/rand"
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
 )
@@ -96,10 +96,22 @@ func GetOriginalURL(c *gin.Context, db *sql.DB) {
 	return
 }
 
+func randomString(length int) string {
+    rand.Seed(time.Now().UnixNano())
+    b := make([]byte, length+2)
+    rand.Read(b)
+    return fmt.Sprintf("%x", b)[2 : length+2]
+}
+
 func CreateNewShortURL(c *gin.Context, db *sql.DB) {
 	originalURL := c.PostForm("url")
 	shortCode := c.PostForm("shortcode")
 	var short string
+
+	//if shortCode is empty, generate random string
+	if shortCode == "" {
+		shortCode = randomString(6)
+	}
 
 	var existingShortcode string
 	err := db.QueryRow("SELECT short FROM links WHERE short = $1", shortCode).Scan(&existingShortcode)
