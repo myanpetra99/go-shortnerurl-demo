@@ -110,12 +110,25 @@ func randomString(length int) string {
     return fmt.Sprintf("%x", b)[2 : length+2]
 }
 
+type ShortURLRequest struct {
+	Url      string `json:"url"`
+	Shortcode string `json:"shortcode"`
+}
+
 func CreateNewShortURL(c *gin.Context, db *sql.DB) {
-	originalURL := c.PostForm("url")
-	shortCode := c.PostForm("shortcode")
+	var requestData ShortURLRequest
+
+	// Bind JSON data from request to requestData
+	if err := c.BindJSON(&requestData); err != nil {
+		c.String(400, "Invalid data format")
+		return
+	}
+
+	originalURL := requestData.Url
+	shortCode := requestData.Shortcode
 	var short string
 
-	//if shortCode is empty, generate random string
+	// If shortCode is empty, generate a random string
 	if shortCode == "" {
 		shortCode = randomString(6)
 	}
