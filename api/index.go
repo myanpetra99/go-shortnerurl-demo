@@ -9,6 +9,7 @@ import (
 	"time"
 	"math/rand"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/cors"
 	_ "github.com/lib/pq"
 )
 
@@ -36,6 +37,12 @@ func Routes(r *gin.Engine) {
 
 func init() {
 	app = gin.New()
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true  
+	config.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"}
+	config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type"}
+
+	app.Use(cors.New(config)) 
 	Routes(app)
 }
 
