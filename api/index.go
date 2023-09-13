@@ -92,7 +92,7 @@ func GetOriginalURL(c *gin.Context, db *sql.DB) {
 	err := db.QueryRow("SELECT original FROM links WHERE short = $1 AND expired_at >= $2", shortcode, time.Now().Format("2006-01-02")).Scan(&url)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			c.String(404, "No links found with that short or maybe the link has expired")
+			c.Redirect(302, "https://nextjs-urlshortner-kecilin.vercel.app/404")
 			return
 		}
 		log.Fatal(err)
