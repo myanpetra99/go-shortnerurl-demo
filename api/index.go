@@ -4,12 +4,13 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
 	"time"
-	"math/rand"
-	"github.com/gin-gonic/gin"
+
 	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
 )
 
@@ -38,11 +39,11 @@ func Routes(r *gin.Engine) {
 func init() {
 	app = gin.New()
 	config := cors.DefaultConfig()
-	config.AllowAllOrigins = true  
+	config.AllowAllOrigins = true
 	config.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"}
 	config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type"}
 
-	app.Use(cors.New(config)) 
+	app.Use(cors.New(config))
 	Routes(app)
 }
 
@@ -104,14 +105,14 @@ func GetOriginalURL(c *gin.Context, db *sql.DB) {
 }
 
 func randomString(length int) string {
-    rand.Seed(time.Now().UnixNano())
-    b := make([]byte, length+2)
-    rand.Read(b)
-    return fmt.Sprintf("%x", b)[2 : length+2]
+	rand.Seed(time.Now().UnixNano())
+	b := make([]byte, length+2)
+	rand.Read(b)
+	return fmt.Sprintf("%x", b)[2 : length+2]
 }
 
 type ShortURLRequest struct {
-	Url      string `json:"url"`
+	Url       string `json:"url"`
 	Shortcode string `json:"shortcode"`
 }
 
@@ -126,6 +127,12 @@ func CreateNewShortURL(c *gin.Context, db *sql.DB) {
 
 	originalURL := requestData.Url
 	shortCode := requestData.Shortcode
+
+	if originalURL == "" {
+		c.String(400, "URL cannot be empty")
+		return
+	}
+
 	var short string
 
 	// If shortCode is empty, generate a random string
