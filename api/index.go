@@ -18,7 +18,8 @@ var app *gin.Engine
 
 func Routes(r *gin.Engine) {
 	r.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "This is home page")
+		c.Redirect(302, "https://nextjs-urlshortner-kecilin.vercel.app")
+		return
 	})
 	r.GET("/:short", func(c *gin.Context) {
 		db, err := ConnectToDB()
